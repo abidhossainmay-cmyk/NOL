@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign up</title>
+<style>
+:root{--bg:#eef2f0;--card:#fff;--ink:#16211d;--mute:#5d6b65;--line:#cfd8d3;--accent:#0f6b52;--accent-ink:#fff;--err:#b3261e;--ok:#0f6b52;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101815;--card:#18231f;--ink:#e8f0ec;--mute:#93a39b;--line:#2d3d36;--accent:#4fc9a0;--accent-ink:#06231a;--err:#ff8a80;--ok:#4fc9a0}}
+:root[data-theme="dark"]{--bg:#101815;--card:#18231f;--ink:#e8f0ec;--mute:#93a39b;--line:#2d3d36;--accent:#4fc9a0;--accent-ink:#06231a;--err:#ff8a80;--ok:#4fc9a0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif;min-height:100vh;display:grid;place-items:center;padding:20px}
+main{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
+h1{font:600 1.5rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+p.sub{margin:0 0 20px;color:var(--mute)}
+.bar{display:flex;gap:6px;margin-bottom:22px}
+.bar i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.bar i.on{background:var(--accent)}
+label{display:block;font-weight:600;margin:14px 0 6px}
+input{width:100%;padding:11px 12px;font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:8px}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button{margin-top:20px;width:100%;padding:12px;font:inherit;font-weight:600;color:var(--accent-ink);background:var(--accent);border:0;border-radius:8px;cursor:pointer}
+.msg{min-height:1.4em;margin:10px 0 0;font-size:.95rem;color:var(--err)}
+.msg.ok{color:var(--ok)}
+.done a{display:inline-block;margin-top:16px;color:var(--accent);font-weight:600;word-break:break-all}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <div class="bar" aria-hidden="true"><i id="b1" class="on"></i><i id="b2"></i><i id="b3"></i></div>
+
+  <!-- Step 1: name + age -->
+  <section id="s1">
+    <h1>Create your account</h1>
+    <p class="sub">Tell us a little about you.</p>
+    <label for="name">Name</label>
+    <input id="name" autocomplete="name">
+    <label for="age">Age</label>
+    <input id="age" inputmode="numeric" autocomplete="off">
+    <p class="msg" id="m1" role="alert"></p>
+    <button id="go1">Continue</button>
+  </section>
+
+  <!-- Under 18 -->
+  <section id="sx" hidden>
+    <h1>Sign-up unavailable</h1>
+    <p class="sub">You are not old enough to sign up.</p>
+    <button id="back">Start over</button>
+  </section>
+
+  <!-- Step 2: email + password -->
+  <section id="s2" hidden>
+    <h1>Go to next</h1>
+    <p class="sub">Add your email and choose a password.</p>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="email">
+    <label for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="new-password">
+    <label for="pw2">Confirm password</label>
+    <input id="pw2" type="password" autocomplete="new-password">
+    <p class="msg" id="m2" role="alert"></p>
+    <button id="go2">Create account</button>
+  </section>
+
+  <!-- Done -->
+  <section id="s3" class="done" hidden>
+    <h1>Your account has been successfully verified!</h1>
+    <p class="sub" id="welcome">Successfully logged in!</p>
+    <p>Now go to this link:</p>
+    <a href="https://abidhossain.framer.website" target="_blank" rel="noopener">https://abidhossain.framer.website</a>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const show = (id, step) => {
+  ["s1","sx","s2","s3"].forEach(s => $(s).hidden = s !== id);
+  ["b1","b2","b3"].forEach((b,i) => $(b).classList.toggle("on", i < step));
+};
+
+$("go1").onclick = () => {
+  const raw = $("age").value.trim();
+  if (!$("name").value.trim()) { $("m1").textContent = "Please enter your name."; $("name").focus(); return; }
+  if (!/^\d+$/.test(raw) || parseInt(raw, 10) < 1 || parseInt(raw, 10) > 120) { $("m1").textContent = "Please enter a valid numeric age."; $("age").focus(); return; }
+  $("m1").textContent = "";
+  const minor = parseInt(raw, 10) < 18;
+  show(minor ? "sx" : "s2", minor ? 1 : 2);
+};
+
+$("back").onclick = () => { $("age").value = ""; show("s1", 1); };
+
+$("go2").onclick = () => {
+  const m = $("m2");
+  if (!$("email").value.trim() || !$("email").checkValidity()) { m.textContent = "Enter a valid email address."; $("email").focus(); return; }
+  if (!$("pw").value) { m.textContent = "Please enter a password."; $("pw").focus(); return; }
+  if ($("pw").value.length < 6) { m.textContent = "Password must be at least 6 characters."; $("pw").focus(); return; }
+  if (!$("pw2").value) { m.textContent = "Please confirm your password."; $("pw2").focus(); return; }
+  if ($("pw").value !== $("pw2").value) { m.textContent = "Passwords do not match. Try again!"; $("pw").value = $("pw2").value = ""; $("pw").focus(); return; }
+  m.textContent = "";
+  const n = $("name").value.trim();
+  $("welcome").textContent = n ? "Successfully logged in, " + n + "!" : "Successfully logged in!";
+  show("s3", 3);
+};
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  if (!$("s1").hidden) $("go1").click();
+  else if (!$("s2").hidden) $("go2").click();
+});
+</script>
+</body>
+</html>
